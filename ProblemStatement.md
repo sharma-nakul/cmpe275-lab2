@@ -1,4 +1,4 @@
-# Lab to Implement Spring MVC, ORM, REST and Transactions
+## Implementation of Spring MVC, ORM, REST and Transactions
 
 #Problem Statement
 
