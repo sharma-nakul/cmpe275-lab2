@@ -1,11 +1,15 @@
-package edu.sjsu.cmpe275.model;
+package edu.sjsu.cmpe275;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Nakul on 27-Oct-15.
  * POJO class to hold Person information
  */
+
 public class Person {
     private long id;
     private String firstname;
@@ -32,6 +36,17 @@ public class Person {
         this.firstname = firstname;
     }
 
+
+    public void createProfile(String firstname, String lastname, String email, String description, Address address, Organization organization) {
+        Random randomId = new Random();
+        this.setId(randomId.nextLong());
+        this.setFirstname(firstname);
+        this.setEmail(email);
+        this.setLastname(lastname);
+        this.setDescription(description);
+        this.setAddress(address);
+        this.setOrg(organization);
+    }
     public String getLastname() {
         return lastname;
     }
@@ -56,6 +71,7 @@ public class Person {
         this.description = description;
     }
 
+    @JsonIgnore
     public Address getAddress() {
         return address;
     }
@@ -72,6 +88,7 @@ public class Person {
         this.org = org;
     }
 
+    @JsonIgnore
     public List<Person> getFriends() {
         return friends;
     }
