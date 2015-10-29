@@ -28,4 +28,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'org.springframework:spring-context:4.2.2.RELEASE'
     compile("org.springframework.boot:spring-boot-starter-web:1.2.7.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("com.h2database:h2")
 }

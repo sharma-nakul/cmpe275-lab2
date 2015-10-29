@@ -43,7 +43,6 @@ public class PersonController extends Throwable {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Person> addPerson(
-            @RequestBody(required = false) Organization org,
             @RequestParam(value = "firstname", required = true) String firstname,
             @RequestParam(value = "lastname", required = true) String lastname,
             @RequestParam(value = "email", required = true) String email,
@@ -51,18 +50,26 @@ public class PersonController extends Throwable {
             @RequestParam(value = "city", required = false) String city,
             @RequestParam(value = "state", required = false) String state,
             @RequestParam(value = "zip", required = false) String zip,
-            @RequestParam(value = "description", required = false) String description)
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "organization", required = false) String orgId)
             throws NumberFormatException, NullPointerException, MissingServletRequestParameterException {
 
         Address address = new Address();
         address.setAddress(street, city, state, zip);
         this.person.setAddress(address);
         Organization organization = new Organization(address);
-        organization.setId(org.getId());
+        if(orgId!=null)
+        organization.setId(Long.parseLong(orgId));
+        else
+        organization.setId(999);
         person.createProfile(firstname, lastname, email, description, address, organization);
         userProfiles.put(person.getId(), person); //persist user profile.
-        return new ResponseEntity<>(person, HttpStatus.CREATED);
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
+
+
+
+    /* Exception Handling Methods */
 
     @Autowired
     private MessageSource messageSource;
@@ -72,7 +79,7 @@ public class PersonController extends Throwable {
     public ResponseEntity<BadRequestException> missigParameters(HttpServletRequest request, MissingServletRequestParameterException exception) {
         Locale locale = LocaleContextHolder.getLocale();
         String errorMessage = messageSource.getMessage("error.bad.parameter.id", null, locale);
-        errorMessage += exception.getMessage();
+        errorMessage += " " +exception.getMessage();
         String errorURL = request.getRequestURL().toString();
         return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.BAD_REQUEST);
     }
@@ -80,7 +87,6 @@ public class PersonController extends Throwable {
 
     /**
      * The method handle NumberFormatException.
-     *
      * @param request   This is to request the URL of the API.
      * @param exception If NumberFormatException occurs, this object will have exception details.
      * @return It returns error message and url of the request for exception has been generated in JSON format.
@@ -90,13 +96,13 @@ public class PersonController extends Throwable {
     public ResponseEntity<BadRequestException> numberFormatException(HttpServletRequest request, NumberFormatException exception) {
         Locale locale = LocaleContextHolder.getLocale();
         String errorMessage = messageSource.getMessage("error.bad.organization.id", null, locale);
-        errorMessage += exception.getMessage();
+        errorMessage += " "+exception.getMessage();
         String errorURL = request.getRequestURL().toString();
-        return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.BAD_REQUEST);
     }
 
     /**
-     * The method handle NullPointerException.
+     * The method handles NullPointerException.
      *
      * @param request   This is to request the URL of the API.
      * @param exception If NullPointerException occurs, this object will have exception details.
@@ -107,14 +113,13 @@ public class PersonController extends Throwable {
     public ResponseEntity<BadRequestException> nullPointerException(HttpServletRequest request, NullPointerException exception) {
         Locale locale = LocaleContextHolder.getLocale();
         String errorMessage = messageSource.getMessage("error.nullvalue.organization.id", null, locale);
-        errorMessage += exception.toString();
+        errorMessage += " "+exception.toString();
         String errorURL = request.getRequestURL().toString();
-        return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.BAD_REQUEST);
     }
 
     /**
-     * The method handle all other exceptions and returns status as BAD_REQUEST.
-     *
+     * The method handles all other exceptions and returns status as BAD_REQUEST - 400.
      * @param request   This is to request the URL of the API.
      * @param exception If Exception occurs, this object will have exception details.
      * @return It returns error message and url of the request for exception has been generated in JSON format.
@@ -124,7 +129,7 @@ public class PersonController extends Throwable {
     public ResponseEntity<BadRequestException> genericException(HttpServletRequest request, Exception exception) {
         Locale locale = LocaleContextHolder.getLocale();
         String errorMessage = messageSource.getMessage("error.bad.generic.output", null, locale);
-        errorMessage += exception.getMessage();
+        errorMessage += " "+exception.getMessage();
         String errorURL = request.getRequestURL().toString();
         return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.BAD_REQUEST);
     }

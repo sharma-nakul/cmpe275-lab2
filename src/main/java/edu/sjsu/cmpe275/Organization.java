@@ -13,6 +13,7 @@ public class Organization {
     private Address address;
 
     public Organization(Address address) {
+        this.id=999;
         this.name = "";
         this.description = "";
         this.address = address;
@@ -33,11 +34,7 @@ public class Organization {
     }
 
     public void setId(long id) {
-        try {
-            this.id = id;
-        } catch (NullPointerException e) {
-            this.id = 999;
-        }
+        this.id = id;
     }
 
     @JsonIgnore
