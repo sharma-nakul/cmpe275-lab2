@@ -1,33 +1,41 @@
-package edu.sjsu.cmpe275;
+package edu.sjsu.cmpe275.lab2.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.persistence.*;
 
 /**
  * Created by Nakul on 27-Oct-15.
  * POJO class to hold organization information
  */
+
+@Entity
+@Table(name = "ORGANIZATION")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Organization {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="ORG_ID")
     private long id;
+
+    @Column(name = "ORG_NAME")
     private String name;
+
+    @Column(name = "ORG_DESC")
     private String description;
+
+    @Embedded
     private Address address;
 
     public Organization(Address address) {
-        this.id=999;
-        this.name = "";
-        this.description = "";
         this.address = address;
     }
 
     /**
      * Default constructor to handle request without id any value in id field.
-     * This set default value of id field as 999 as id is of long data type which
-     * cannot be null (primitive data type)
      */
-    public Organization() {
-
-        this.id = 999;
-    }
+    public Organization() {}
 
     public long getId() {
         return id;
@@ -37,17 +45,14 @@ public class Organization {
         this.id = id;
     }
 
-    @JsonIgnore
     public String getName() {
         return name;
     }
-
 
     public void setName(String name) {
         this.name = name;
     }
 
-    @JsonIgnore
     public String getDescription() {
         return description;
     }
@@ -56,7 +61,6 @@ public class Organization {
         this.description = description;
     }
 
-    @JsonIgnore
     public Address getAddress() {
         return address;
     }

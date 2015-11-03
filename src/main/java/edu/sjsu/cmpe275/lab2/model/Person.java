@@ -1,24 +1,55 @@
-package edu.sjsu.cmpe275;
+package edu.sjsu.cmpe275.lab2.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.List;
-import java.util.Random;
+import javax.persistence.*;
 
 /**
  * Created by Nakul on 27-Oct-15.
  * POJO class to hold Person information
  */
 
+@Entity
+@Table(name = "PERSON")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "P_ID")
     private long id;
+
+    @Column(name = "FIRST_NAME", nullable = false)
     private String firstname;
+
+    @Column(name = "LAST_NAME", nullable = false)
     private String lastname;
+
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "DESCRIPTION")
     private String description;
+
+    @Embedded
     private Address address;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ORG_ID")
     private Organization org;
-    private List<Person> friends;
+
+    // private List<Person> friends;
+    public Person() {
+    }
+
+    public Person(String firstname, String lastname, String email, String description, Address address, Organization organization) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.description = description;
+        this.org=organization;
+        this.address=address;
+    }
 
     public long getId() {
         return id;
@@ -36,17 +67,6 @@ public class Person {
         this.firstname = firstname;
     }
 
-
-    public void createProfile(String firstname, String lastname, String email, String description, Address address, Organization organization) {
-        Random randomId = new Random();
-        this.setId(randomId.nextLong());
-        this.setFirstname(firstname);
-        this.setEmail(email);
-        this.setLastname(lastname);
-        this.setDescription(description);
-        this.setAddress(address);
-        this.setOrg(organization);
-    }
     public String getLastname() {
         return lastname;
     }
@@ -71,7 +91,6 @@ public class Person {
         this.description = description;
     }
 
-    @JsonIgnore
     public Address getAddress() {
         return address;
     }
@@ -79,6 +98,7 @@ public class Person {
     public void setAddress(Address address) {
         this.address = address;
     }
+
 
     public Organization getOrg() {
         return org;
@@ -88,12 +108,11 @@ public class Person {
         this.org = org;
     }
 
-    @JsonIgnore
-    public List<Person> getFriends() {
+  /*  public List<Person> getFriends() {
         return friends;
     }
 
     public void setFriends(List<Person> friends) {
         this.friends = friends;
-    }
+    }*/
 }

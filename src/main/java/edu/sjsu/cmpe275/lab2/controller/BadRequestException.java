@@ -1,4 +1,4 @@
-package edu.sjsu.cmpe275;
+package edu.sjsu.cmpe275.lab2.controller;
 
 /**
  * Created by Nakul on 27-Oct-15.

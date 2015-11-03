@@ -1,4 +1,4 @@
-package edu.sjsu.cmpe275;
+package edu.sjsu.cmpe275.lab2;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
