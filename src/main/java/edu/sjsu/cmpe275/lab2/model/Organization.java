@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.lab2.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by Nakul on 27-Oct-15.
@@ -11,6 +12,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ORGANIZATION")
+@XmlRootElement (name = "Organization")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Organization {
 

@@ -10,7 +10,7 @@ import edu.sjsu.cmpe275.lab2.model.Person;
  * Interface to deliver Person related operations.
  */
 
-public interface PersonService {
+public interface IPersonService {
 
     Person addPerson(String firstname, String lastname, String email,String description, Address address, Organization organization);
     void updatePerson (Person person);

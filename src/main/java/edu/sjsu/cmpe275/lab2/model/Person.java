@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.lab2.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by Nakul on 27-Oct-15.
@@ -11,6 +12,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "PERSON")
+@XmlRootElement(name = "Person")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
 
@@ -36,7 +38,7 @@ public class Person {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ORG_ID")
-    private Organization org;
+    private Organization organization;
 
     // private List<Person> friends;
     public Person() {
@@ -47,65 +49,65 @@ public class Person {
         this.lastname = lastname;
         this.email = email;
         this.description = description;
-        this.org=organization;
-        this.address=address;
+        this.organization = organization;
+        this.address = address;
     }
 
-    public long getId() {
-        return id;
-    }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getFirstname() {
-        return firstname;
     }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
-    public String getLastname() {
-        return lastname;
-    }
-
     public void setLastname(String lastname) {
         this.lastname = lastname;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Address getAddress() {
-        return address;
     }
 
     public void setAddress(Address address) {
         this.address = address;
     }
 
-
-    public Organization getOrg() {
-        return org;
+    public void setOrganization(Organization org) {
+        this.organization = org;
     }
 
-    public void setOrg(Organization org) {
-        this.org = org;
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public long getId() {
+        return id;
     }
 
   /*  public List<Person> getFriends() {

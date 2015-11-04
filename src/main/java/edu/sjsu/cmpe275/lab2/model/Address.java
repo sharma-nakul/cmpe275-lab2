@@ -2,6 +2,7 @@ package edu.sjsu.cmpe275.lab2.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by Nakul on 27-Oct-15.
@@ -9,6 +10,7 @@ import javax.persistence.Embeddable;
  */
 
 @Embeddable
+@XmlRootElement(name="Address")
 public class Address {
 
     @Column(name ="STREET")
@@ -38,6 +40,7 @@ public class Address {
     }
 
     public String getCity() {
+
         return city;
     }
 

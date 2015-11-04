@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional("txManager")
-public class PersonServiceImpl implements PersonService {
+public class PersonServiceImpl implements IPersonService {
 
     private static final Logger logger = LoggerFactory.getLogger(PersonServiceImpl.class);
 

@@ -3,7 +3,9 @@ package edu.sjsu.cmpe275.lab2.controller;
 import edu.sjsu.cmpe275.lab2.model.Address;
 import edu.sjsu.cmpe275.lab2.model.Organization;
 import edu.sjsu.cmpe275.lab2.model.Person;
-import edu.sjsu.cmpe275.lab2.service.PersonService;
+import edu.sjsu.cmpe275.lab2.service.IPersonService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,14 +14,18 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Nakul on 27-Oct-15.
- * Controller class which calls person related APIs.
+ * Controller class for Person Entity. The defines all person related APIs.
  */
 @RestController
-@RequestMapping(value = "api/v1/person", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "api/v1/person",
+        produces = {"application/xml", "application/json", "text/html"},
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 public class PersonController extends Throwable {
 
+    private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
+
     @Autowired
-    private PersonService personService;
+    private IPersonService IPersonService;
 
 
     /**
@@ -60,25 +66,22 @@ public class PersonController extends Throwable {
         // Org id has be retrieved from table
         if (orgId != null)
             organization.setId(Long.parseLong(orgId));
-        Person person = this.personService.addPerson(firstname, lastname, email, description, address, organization);
-        if (person==null)
-            return new ResponseEntity<String>("Could not save the user at this time, please check your request or try later.",HttpStatus.BAD_REQUEST);
+        Person person = this.IPersonService.addPerson(firstname, lastname, email, description, address, organization);
+        if (person == null)
+            return new ResponseEntity<String>("Could not save the user at this time, please check your request or try later.", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getPersonInformation(
             @PathVariable("id") String id) {
-        try
-        {
-            Person person = this.personService.getPerson(id);
-            if(person!=null)
-            return new ResponseEntity<Person>(person,HttpStatus.OK);
+        try {
+            Person person = this.IPersonService.getPerson(id);
+            if (person != null)
+                return new ResponseEntity<Person>(person, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        catch(NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
