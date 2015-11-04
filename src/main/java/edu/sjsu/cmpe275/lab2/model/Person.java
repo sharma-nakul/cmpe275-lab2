@@ -34,7 +34,7 @@ public class Person {
     @Embedded
     private Address address;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ORG_ID")
     private Organization org;
 

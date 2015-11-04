@@ -1,21 +1,14 @@
 package edu.sjsu.cmpe275.lab2.controller;
 
-import edu.sjsu.cmpe275.lab2.Utility.HUtility;
 import edu.sjsu.cmpe275.lab2.model.Address;
 import edu.sjsu.cmpe275.lab2.model.Organization;
 import edu.sjsu.cmpe275.lab2.model.Person;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
+import edu.sjsu.cmpe275.lab2.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
 
 /**
  * Created by Nakul on 27-Oct-15.
@@ -25,8 +18,9 @@ import java.util.Locale;
 @RequestMapping(value = "api/v1/person", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class PersonController extends Throwable {
 
-    private static Session session;
-    Person person;
+    @Autowired
+    private PersonService personService;
+
 
     /**
      * Controller method to fetch create new user profile. Payload should be of JSON format.
@@ -50,7 +44,7 @@ public class PersonController extends Throwable {
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Person> addPerson(
+    public ResponseEntity addPerson(
             @RequestParam(value = "firstname", required = true) String firstname,
             @RequestParam(value = "lastname", required = true) String lastname,
             @RequestParam(value = "email", required = true) String email,
@@ -59,82 +53,33 @@ public class PersonController extends Throwable {
             @RequestParam(value = "state", required = false) String state,
             @RequestParam(value = "zip", required = false) String zip,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "organization", required = false) String orgId)
-            throws HibernateException {
+            @RequestParam(value = "organization", required = false) String orgId) {
 
         Address address = new Address(street, city, state, zip);
         Organization organization = new Organization();
         // Org id has be retrieved from table
         if (orgId != null)
             organization.setId(Long.parseLong(orgId));
-        //else
-        //organization.setId(999);
-        person = new Person(firstname, lastname, email, description, address, organization);
-        try {
-            session = HUtility.getSessionFactory().openSession();
-            session.beginTransaction();
-            session.save(person);
-            session.flush();
-            session.getTransaction().commit();
-            return new ResponseEntity<>(person, HttpStatus.OK);
-        } catch (HibernateException e) {
-            session.getTransaction().rollback();
-            throw new HibernateException("Hibernate Exception: " + e.getMessage());
-        } finally {
-            session.flush();
-            session.close();
-        }
+        Person person = this.personService.addPerson(firstname, lastname, email, description, address, organization);
+        if (person==null)
+            return new ResponseEntity<String>("Could not save the user at this time, please check your request or try later.",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Person> getPersonInformation(
-            @PathVariable("id") String id,
-            @RequestParam(value = "format", required = false) String format)
-    {
-        try{
-            session = HUtility.getSessionFactory().openSession();
-            long p_id= Long.parseLong(id);
-            Person person = (Person) session.get(Person.class,p_id);
-            if(person==null)
-                throw new HibernateException("Person doesn't exist.");
-            session.flush();
-            return new ResponseEntity<Person>(person, HttpStatus.OK);
+    public ResponseEntity getPersonInformation(
+            @PathVariable("id") String id) {
+        try
+        {
+            Person person = this.personService.getPerson(id);
+            if(person!=null)
+            return new ResponseEntity<Person>(person,HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        catch (HibernateException e) {
-            session.getTransaction().rollback();
-            throw new HibernateException("Hibernate Exception: " + e.getMessage());
-        } finally {
-            session.flush();
-            session.close();
+        catch(NullPointerException e)
+        {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-    }
-    /* Exception Handling Methods */
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @ExceptionHandler(HibernateException.class)
-    @ResponseBody
-    public ResponseEntity<BadRequestException> connectionError(HttpServletRequest request, HibernateException exception) {
-        String errorMessage = exception.getMessage();
-        String errorURL = request.getRequestURL().toString();
-        return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.BAD_REQUEST);
-    }
-
-    /**
-     * The method handles all other exceptions and returns status as BAD_REQUEST - 400.
-     *
-     * @param request   This is to request the URL of the API.
-     * @param exception If Exception occurs, this object will have exception details.
-     * @return It returns error message and url of the request for exception has been generated in JSON format.
-     */
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public ResponseEntity<BadRequestException> genericException(HttpServletRequest request, Exception exception) {
-        Locale locale = LocaleContextHolder.getLocale();
-        String errorMessage = messageSource.getMessage("error.bad.generic.output", null, locale);
-        errorMessage += " " + exception.getMessage();
-        String errorURL = request.getRequestURL().toString();
-        return new ResponseEntity<>(new BadRequestException(errorURL, errorMessage), HttpStatus.BAD_REQUEST);
     }
 }

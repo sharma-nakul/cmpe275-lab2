@@ -4,7 +4,7 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
-          <unit-entry name="hibernate.cfg.xml" value="423c9353-2edd-4a06-a251-a39b0f5764e3" />
+          <unit-entry name="getSessionFactory" />
         </datasource-map>
         <naming-strategy-map />
         <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/hibernate.cfg.xml" />
@@ -15,6 +15,7 @@
         <fileset id="fileset" name="Spring Application Context" removed="false">
           <file>file://$MODULE_DIR$/src/main/java/edu/sjsu/cmpe275/lab2/Application.java</file>
           <file>file://$MODULE_DIR$/src/main/java/edu/sjsu/cmpe275/lab2/WebConfig.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/edu/sjsu/cmpe275/lab2/HibernateConfig.java</file>
         </fileset>
       </configuration>
     </facet>
