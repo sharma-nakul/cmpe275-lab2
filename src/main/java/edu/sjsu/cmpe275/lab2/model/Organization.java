@@ -3,7 +3,10 @@ package edu.sjsu.cmpe275.lab2.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import java.io.Serializable;
 
 /**
  * Created by Nakul on 27-Oct-15.
@@ -13,8 +16,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "ORGANIZATION")
 @XmlRootElement (name = "Organization")
+@XmlSeeAlso(Address.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Organization {
+public class Organization implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +43,7 @@ public class Organization {
      */
     public Organization() {}
 
+    @XmlElement
     public long getId() {
         return id;
     }
@@ -47,6 +52,7 @@ public class Organization {
         this.id = id;
     }
 
+    @XmlElement
     public String getName() {
         return name;
     }
@@ -55,6 +61,7 @@ public class Organization {
         this.name = name;
     }
 
+    @XmlElement
     public String getDescription() {
         return description;
     }
@@ -63,6 +70,7 @@ public class Organization {
         this.description = description;
     }
 
+    @XmlElement (name ="address")
     public Address getAddress() {
         return address;
     }

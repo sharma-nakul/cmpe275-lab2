@@ -13,4 +13,6 @@ public interface IPersonDao {
     Person addPerson(String firstname, String lastname, String email,String description, Address address, Organization organization);
     void updatePerson (Person person);
     Person getPerson(String id);
+    void addFriend(Person person);
+    void deleteFriend (Person person);
 }

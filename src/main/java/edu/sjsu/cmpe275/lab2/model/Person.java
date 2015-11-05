@@ -1,9 +1,18 @@
 package edu.sjsu.cmpe275.lab2.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Nakul on 27-Oct-15.
@@ -12,9 +21,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "PERSON")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 @XmlRootElement(name = "Person")
+@XmlSeeAlso(Organization.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Person {
+public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,12 +47,25 @@ public class Person {
     @Embedded
     private Address address;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ORG_ID")
     private Organization organization;
 
-    // private List<Person> friends;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "FRIENDSHIP",
+            joinColumns = {@JoinColumn(name = "PERSON_ID", referencedColumnName = "P_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "FRIEND_ID", referencedColumnName = "P_ID")})
+    private List<Person> friends;
+
+    @ManyToMany(fetch =FetchType.EAGER)
+    @JoinTable(name = "FRIENDSHIP",
+            joinColumns = { @JoinColumn (name = "FRIEND_ID" , referencedColumnName = "P_ID")},
+            inverseJoinColumns = {@JoinColumn (name = "PERSON_ID" , referencedColumnName = "P_ID")})
+    private List<Person> friendsWith;
+
     public Person() {
+        this.friends=new ArrayList<>();
+        this.friendsWith=new ArrayList<>();
     }
 
     public Person(String firstname, String lastname, String email, String description, Address address, Organization organization) {
@@ -51,6 +75,8 @@ public class Person {
         this.description = description;
         this.organization = organization;
         this.address = address;
+        this.friends=new ArrayList<>();
+        this.friendsWith=new ArrayList<>();
     }
 
 
@@ -82,39 +108,57 @@ public class Person {
         this.organization = org;
     }
 
+    @XmlTransient
+    public List<Person> getFriends() {
+        return friends;
+    }
+
+    @XmlTransient
     public Organization getOrganization() {
         return organization;
     }
 
+    @XmlTransient
     public Address getAddress() {
         return address;
     }
 
+    @XmlElement
     public String getDescription() {
         return description;
     }
 
+    @XmlElement
     public String getEmail() {
         return email;
     }
 
+    @XmlElement
     public String getLastname() {
         return lastname;
     }
 
+    @XmlElement
     public String getFirstname() {
         return firstname;
     }
 
+    @XmlElement
     public long getId() {
         return id;
     }
 
-  /*  public List<Person> getFriends() {
-        return friends;
+    public void setFriends(List<Person> friends) {
+        this.friends  = friends;
     }
 
-    public void setFriends(List<Person> friends) {
-        this.friends = friends;
-    }*/
+    @JsonIgnore
+    @XmlTransient
+    public List<Person> getFriendsWith() {
+        return friendsWith;
+    }
+
+    public void setFriendsWith(List<Person> friendsWith) {
+        this.friendsWith = friendsWith;
+    }
 }

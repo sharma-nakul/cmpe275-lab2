@@ -23,8 +23,9 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
     public Person addPerson(String firstname, String lastname, String email, String description, Address address, Organization organization) {
         Person person = new Person(firstname, lastname, email, description, address, organization);
         session = getSession();
-        session.persist(person);
-        logger.info(person.getFirstname() + " " + person.getLastname() + " added successfully");
+        session.save(person);
+        session.flush();
+        logger.debug(person.getFirstname() + " " + person.getLastname() + " added successfully");
         return person;
     }
 
@@ -34,14 +35,31 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
         long p_id = Long.parseLong(id);
         Person person = (Person) session.get(Person.class, p_id);
         if (person == null)
-            logger.info("Returns null while retrieving the person of id " + p_id);
+            logger.debug("Returns null while retrieving the person of id " + p_id);
         else
-            logger.info("Person of id " + p_id + " exists in database.");
+            logger.debug("Person of id " + p_id + " exists in database.");
         return person;
     }
 
     @Override
     public void updatePerson(Person person) {
+        session =getSession();
+        session.update(person);
+        logger.debug(person.getFirstname() + " " + person.getLastname() + " profile updated successfully");
+    }
 
+
+    @Override
+    public void addFriend(Person person) {
+        session =getSession();
+        session.update(person);
+        logger.debug(person.getFirstname() + " " + person.getLastname() + " updated friendship successfully");
+    }
+
+    @Override
+    public void deleteFriend(Person person){
+        session=getSession();
+        session.update(person);
+        logger.debug(person.getFirstname() + " " + person.getLastname() + " deleted friendship successfully");
     }
 }

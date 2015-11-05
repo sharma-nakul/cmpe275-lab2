@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service
-@Transactional("txManager")
+@Transactional ("tx1")
 public class PersonServiceImpl implements IPersonService {
 
     private static final Logger logger = LoggerFactory.getLogger(PersonServiceImpl.class);
@@ -33,6 +33,15 @@ public class PersonServiceImpl implements IPersonService {
     }
 
     public void updatePerson(Person person) {
-
+        personDao.updatePerson(person);
     }
+
+    public void addFriend(Person person){
+        personDao.addFriend(person);
+    }
+
+    public void deleteFriend(Person person){
+        personDao.deleteFriend(person);
+    }
+
 }

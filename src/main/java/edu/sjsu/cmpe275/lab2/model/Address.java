@@ -2,7 +2,9 @@ package edu.sjsu.cmpe275.lab2.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  * Created by Nakul on 27-Oct-15.
@@ -11,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Embeddable
 @XmlRootElement(name="Address")
-public class Address {
+public class Address implements Serializable{
 
     @Column(name ="STREET")
     private String street;
@@ -35,19 +37,23 @@ public class Address {
     }
 
 
+    @XmlElement
     public String getStreet() {
         return street;
     }
 
+    @XmlElement
     public String getCity() {
 
         return city;
     }
 
+    @XmlElement
     public String getState() {
         return state;
     }
 
+    @XmlElement
     public String getZip() {
         return zip;
     }

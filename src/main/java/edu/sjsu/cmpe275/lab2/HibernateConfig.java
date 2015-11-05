@@ -55,11 +55,12 @@ public class HibernateConfig {
         return dataSource;
     }
 
-    @Bean (name = "txManager")
+    @Bean (name ="tx1")
     public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
         HibernateTransactionManager tx = new HibernateTransactionManager();
         tx.setSessionFactory(sessionFactory);
         tx.setDataSource(dataSource());
         return tx;
     }
+
 }
