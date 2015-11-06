@@ -45,5 +45,4 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         source.setUseCodeAsDefaultMessage(true);
         return source;
     }
-
 }
