@@ -25,7 +25,7 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
         session = getSession();
         session.save(person);
         session.flush();
-        logger.debug(person.getFirstname() + " " + person.getLastname() + " added successfully");
+        logger.info(person.getFirstname() + " " + person.getLastname() + " added successfully");
         return person;
     }
 
@@ -35,9 +35,9 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
         long p_id = Long.parseLong(id);
         Person person = (Person) session.get(Person.class, p_id);
         if (person == null)
-            logger.debug("Returns null while retrieving the person of id " + p_id);
+            logger.info("Returns null while retrieving the person of id " + p_id);
         else
-            logger.debug("Person of id " + p_id + " exists in database.");
+            logger.info("Person of id " + p_id + " exists in database.");
         return person;
     }
 
@@ -45,7 +45,7 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
     public Person updatePerson(Person person) {
         session =getSession();
         session.update(person);
-        logger.debug(person.getFirstname() + " " + person.getLastname() + " profile updated successfully");
+        logger.info(person.getFirstname() + " " + person.getLastname() + " profile updated successfully");
         return person;
     }
 
@@ -53,21 +53,21 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
     public void deletePerson (Person person){
         session=getSession();
         session.delete(person);
-        logger.debug(person.getFirstname() + " " + person.getLastname() + " deleted successfully");
+        logger.info(person.getFirstname() + " " + person.getLastname() + " deleted successfully");
     }
 
     @Override
     public void addFriend(Person person) {
         session =getSession();
         session.update(person);
-        logger.debug(person.getFirstname() + " " + person.getLastname() + " updated friendship successfully");
+        logger.info(person.getFirstname() + " " + person.getLastname() + " updated friendship successfully");
     }
 
     @Override
     public void deleteFriend(Person person){
         session=getSession();
         session.update(person);
-        logger.debug(person.getFirstname() + " " + person.getLastname() + " deleted friendship successfully");
+        logger.info(person.getFirstname() + " " + person.getLastname() + " deleted friendship successfully");
     }
 
 }

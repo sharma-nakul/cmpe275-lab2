@@ -45,7 +45,7 @@ public class Person implements Serializable {
     @Embedded
     private Address address;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ORG_ID")
     private Organization organization;
 
