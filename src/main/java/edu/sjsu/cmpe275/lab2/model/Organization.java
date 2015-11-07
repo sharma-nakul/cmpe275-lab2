@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Table(name = "ORGANIZATION")
 @XmlRootElement (name = "Organization")
 @XmlSeeAlso(Address.class)
+@XmlType(propOrder = { "id", "name","description","address" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Organization implements Serializable {
 
@@ -34,6 +36,12 @@ public class Organization implements Serializable {
     @Embedded
     private Address address;
 
+    public Organization (String name, String description, Address address)
+    {
+        this.name=name;
+        this.description=description;
+        this.address=address;
+    }
     public Organization(Address address) {
         this.address = address;
     }

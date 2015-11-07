@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by Naks on 03-Nov-15.
+ * Created by Nakul on 03-Nov-15.
  * This class implements the interface IPersonDao
  */
 
@@ -42,12 +42,19 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
     }
 
     @Override
-    public void updatePerson(Person person) {
+    public Person updatePerson(Person person) {
         session =getSession();
         session.update(person);
         logger.debug(person.getFirstname() + " " + person.getLastname() + " profile updated successfully");
+        return person;
     }
 
+    @Override
+    public void deletePerson (Person person){
+        session=getSession();
+        session.delete(person);
+        logger.debug(person.getFirstname() + " " + person.getLastname() + " deleted successfully");
+    }
 
     @Override
     public void addFriend(Person person) {
@@ -62,4 +69,5 @@ public class PersonDaoImpl extends AbstractDao implements IPersonDao {
         session.update(person);
         logger.debug(person.getFirstname() + " " + person.getLastname() + " deleted friendship successfully");
     }
+
 }

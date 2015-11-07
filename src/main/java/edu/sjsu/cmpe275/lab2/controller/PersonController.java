@@ -3,13 +3,16 @@ package edu.sjsu.cmpe275.lab2.controller;
 import edu.sjsu.cmpe275.lab2.model.Address;
 import edu.sjsu.cmpe275.lab2.model.Organization;
 import edu.sjsu.cmpe275.lab2.model.Person;
+import edu.sjsu.cmpe275.lab2.service.IOrganizationService;
 import edu.sjsu.cmpe275.lab2.service.IPersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -25,8 +28,10 @@ public class PersonController extends Throwable {
     private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
 
     @Autowired
-    private IPersonService IPersonService;
+    private IPersonService personService;
 
+    @Autowired
+    private IOrganizationService orgService;
 
     /**
      * Controller method to fetch create new user profile. Payload should be of JSON format.
@@ -61,28 +66,117 @@ public class PersonController extends Throwable {
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "organization", required = false) String orgId) {
 
-        Address address = new Address(street, city, state, zip);
-        Organization organization = new Organization();
-        // Org id has be retrieved from table
-        if (orgId != null)
-            organization.setId(Long.parseLong(orgId));
-        Person person = this.IPersonService.addPerson(firstname, lastname, email, description, address, organization);
-        if (person == null)
-            return new ResponseEntity<String>("Could not save the user at this time, please check your request or try later.", HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<Person>(person, HttpStatus.OK);
+        try {
+            Address address = new Address(street, city, state, zip);
+            Organization organization = new Organization();
+            if (orgId != null) {
+                Organization o1=this.orgService.getOrganization(orgId);
+                if(o1==null)
+                    throw new DataIntegrityViolationException("Organization id is incorrect! Please provide correct id or leave it blank.");
+                organization.setId(Long.parseLong(orgId));
+            }
+            Person person = this.personService.addPerson(firstname, lastname, email, description, address, organization);
+            if (person == null)
+                return new ResponseEntity<>("Could not save the user at this time, please check your request or try later.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(person, HttpStatus.OK);
+        }
+        catch(DataIntegrityViolationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("Invalid Request", HttpStatus.BAD_REQUEST);
+        }
     }
 
+
+
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity getPersonInformation(
+    public ResponseEntity getPerson(
             @PathVariable("id") String id) {
         try {
-            Person person = this.IPersonService.getPerson(id);
+            Person person = this.personService.getPerson(id);
             if (person != null)
                 return new ResponseEntity<Person>(person, HttpStatus.OK);
             else
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (NullPointerException e) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
+
+    @RequestMapping(method = RequestMethod.POST, value = "/{id}")
+    @ResponseBody
+    public ResponseEntity updatePerson(
+            @PathVariable("id") String id,
+            @RequestParam(value = "firstname", required = true) String firstname,
+            @RequestParam(value = "lastname", required = true) String lastname,
+            @RequestParam(value = "email", required = true) String email,
+            @RequestParam(value = "street", required = false) String street,
+            @RequestParam(value = "city", required = false) String city,
+            @RequestParam(value = "state", required = false) String state,
+            @RequestParam(value = "zip", required = false) String zip,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "organization", required = false) String orgId) {
+        try {
+            if (id.isEmpty() || id == null)
+                throw new MissingServletRequestParameterException("id", "String");
+            Person person = this.personService.getPerson(id);
+            if (person == null)
+                return new ResponseEntity<>("Person not found.", HttpStatus.NOT_FOUND);
+            else {
+                Address address = person.getAddress();
+                if (firstname!=null)
+                    person.setFirstname(firstname);
+                if (description!=null)
+                    person.setDescription(description);
+                if (lastname!=null)
+                    person.setLastname(lastname);
+                if (email!=null)
+                    person.setEmail(email);
+                if (street!=null)
+                    address.setStreet(street);
+                if (state!=null)
+                    address.setState(state);
+                if (city!=null)
+                    address.setCity(city);
+                if (zip!=null)
+                    address.setZip(zip);
+                Organization organization = person.getOrganization();
+                if (orgId != null)
+                    organization.setId(Long.parseLong(orgId));
+                person.setAddress(address);
+                person.setOrganization(organization);
+                person = this.personService.updatePerson(person);
+                return new ResponseEntity<>(person, HttpStatus.OK);
+            }
+        } catch (MissingServletRequestParameterException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Invalid Request", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deletePerson(
+            @PathVariable("id") String id) {
+
+        try {
+            Person person = this.personService.getPerson(id);
+            if (person != null) {
+                this.personService.deletePerson(person);
+                return new ResponseEntity<>(person, HttpStatus.OK);
+            } else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>("Person's references are present in other tables, cannot delete.", HttpStatus.BAD_REQUEST);
         }
     }
 }
+

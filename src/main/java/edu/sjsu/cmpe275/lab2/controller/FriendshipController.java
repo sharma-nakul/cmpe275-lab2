@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "api/v1/friends")
-public class FriendshipController {
+public class FriendshipController extends Throwable {
 
     @Autowired
     private IPersonService personService;
@@ -32,25 +30,20 @@ public class FriendshipController {
         try {
             Person p1 = this.personService.getPerson(id1);
             Person p2 = this.personService.getPerson(id2);
-            String message = "Done!";
-            List<Person> friendList1 = p1.getFriends();
-            List<Person> friendList2 = p1.getFriendsWith();
-            if (p1 == null || p2 == null)
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            else if (!friendList1.contains(p2)) {
-                friendList1.add(p2);
-                friendList2.add(p2);
-                p1.setFriends(friendList1);
-                p1.setFriendsWith(friendList2);
-                this.personService.addFriend(p1);
-                message = p1.getId() + " and " + p2.getId() + " are now friends";
-            } else
-                throw new IllegalArgumentException();
-            return new ResponseEntity<String>(message, HttpStatus.OK);
+            String message = p1.getFirstname() +" and "+p2.getFirstname()+" are both friends now.";
+            String returnCode = this.personService.addFriend(p1,p2);
+            if(returnCode.equals("Added"))
+                return new ResponseEntity<>(message,HttpStatus.OK);
+            else if(returnCode.equals("Friends"))
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                throw new Exception("Invalid Request");
         } catch (DataIntegrityViolationException cve) {
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException r) {
+            return new ResponseEntity<>("One of the id is not present in database.", HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
 
@@ -60,27 +53,19 @@ public class FriendshipController {
         try {
             Person p1 = this.personService.getPerson(id1);
             Person p2 = this.personService.getPerson(id2);
-            String message = "Done!";
-            List<Person> friendList1 = p1.getFriends();
-            List<Person> friendList2 = p1.getFriendsWith();
-            if (p1 == null || p2 == null)
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            else if (!friendList1.contains(p2)) {
-                friendList1.remove(p2);
-                friendList2.remove(p2);
-                p1.setFriends(friendList1);
-                p1.setFriendsWith(friendList2);
-                this.personService.deleteFriend(p1);
-                message = p1.getId() + " and " + p2.getId() + "are not friends anymore!";
-            } else
-                throw new IllegalArgumentException();
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e)
-        {
-          return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            String message = p1.getFirstname() + " and " + p2.getFirstname() + " are not friends anymore.";
+                String returnCode = this.personService.deleteFriend(p1, p2);
+                if (returnCode.equals("Deleted"))
+                    return new ResponseEntity<>(message, HttpStatus.OK);
+                else if (returnCode.equals("Not friends"))
+                    return new ResponseEntity<>(p1.getFirstname() + " and " + p2.getFirstname() + " are not friends.", HttpStatus.NOT_FOUND);
+                else
+                    throw new Exception("Invalid request!");
+        }  catch (NullPointerException r) {
+            return new ResponseEntity<>("One of the id is not present in database.", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

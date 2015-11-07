@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 /**
@@ -13,6 +14,7 @@ import java.io.Serializable;
 
 @Embeddable
 @XmlRootElement(name="Address")
+@XmlType(propOrder = { "street", "city","state","zip" })
 public class Address implements Serializable{
 
     @Column(name ="STREET")

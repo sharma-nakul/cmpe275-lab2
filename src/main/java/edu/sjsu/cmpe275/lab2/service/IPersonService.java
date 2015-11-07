@@ -13,8 +13,10 @@ import edu.sjsu.cmpe275.lab2.model.Person;
 public interface IPersonService {
 
     Person addPerson(String firstname, String lastname, String email,String description, Address address, Organization organization);
-    void updatePerson (Person person);
+    Person updatePerson (Person person);
     Person getPerson(String id);
-    void addFriend (Person person);
-    void deleteFriend(Person person);
+    void deletePerson (Person person);
+
+    String addFriend (Person person, Person personToAdd);
+    String deleteFriend(Person person, Person personToDelete);
 }

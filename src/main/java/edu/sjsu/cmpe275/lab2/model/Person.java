@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +18,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "PERSON")
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 @XmlRootElement(name = "Person")
-@XmlSeeAlso(Organization.class)
+@XmlSeeAlso(value = {Organization.class, Address.class, Person.class})
+@XmlType(propOrder = {"id", "firstname", "lastname", "email", "description", "organization", "address"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person implements Serializable {
 
@@ -47,25 +45,25 @@ public class Person implements Serializable {
     @Embedded
     private Address address;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ORG_ID")
     private Organization organization;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "FRIENDSHIP",
             joinColumns = {@JoinColumn(name = "PERSON_ID", referencedColumnName = "P_ID")},
             inverseJoinColumns = {@JoinColumn(name = "FRIEND_ID", referencedColumnName = "P_ID")})
     private List<Person> friends;
 
-    @ManyToMany(fetch =FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "FRIENDSHIP",
-            joinColumns = { @JoinColumn (name = "FRIEND_ID" , referencedColumnName = "P_ID")},
-            inverseJoinColumns = {@JoinColumn (name = "PERSON_ID" , referencedColumnName = "P_ID")})
+            joinColumns = {@JoinColumn(name = "FRIEND_ID", referencedColumnName = "P_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "PERSON_ID", referencedColumnName = "P_ID")})
     private List<Person> friendsWith;
 
     public Person() {
-        this.friends=new ArrayList<>();
-        this.friendsWith=new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.friendsWith = new ArrayList<>();
     }
 
     public Person(String firstname, String lastname, String email, String description, Address address, Organization organization) {
@@ -75,8 +73,8 @@ public class Person implements Serializable {
         this.description = description;
         this.organization = organization;
         this.address = address;
-        this.friends=new ArrayList<>();
-        this.friendsWith=new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.friendsWith = new ArrayList<>();
     }
 
 
@@ -113,12 +111,12 @@ public class Person implements Serializable {
         return friends;
     }
 
-    @XmlTransient
+    @XmlElement(name = "organization")
     public Organization getOrganization() {
         return organization;
     }
 
-    @XmlTransient
+    @XmlElement(name = "address")
     public Address getAddress() {
         return address;
     }
@@ -149,7 +147,7 @@ public class Person implements Serializable {
     }
 
     public void setFriends(List<Person> friends) {
-        this.friends  = friends;
+        this.friends = friends;
     }
 
     @JsonIgnore
