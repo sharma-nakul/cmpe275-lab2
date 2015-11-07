@@ -21,7 +21,7 @@
       <column name="STREET" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
       <column name="ZIP" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="ORG_ID"/>
-      <exported-key name="FK_5v18bcaf669u2b2r828b0ejrm" table="person" schema="" catalog="cmpe275lab2" columns="ORG_ID"/>
+      <exported-key name="FK_ORG_ID_CONSTRAINT" table="person" schema="" catalog="cmpe275lab2" columns="ORG_ID"/>
     </table>
     <table name="person" schema="" catalog="cmpe275lab2" type="TABLE">
       <column name="P_ID" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
@@ -35,8 +35,9 @@
       <column name="LAST_NAME" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
       <column name="ORG_ID" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <primary-key name="PRIMARY" columns="P_ID"/>
-      <foreign-key name="FK_5v18bcaf669u2b2r828b0ejrm" columns="ORG_ID" ref-table="organization" ref-schema="" ref-catalog="cmpe275lab2" ref-columns="ORG_ID" update-rule="3" delete-rule="3" deferrability="2"/>
-      <index name="FK_5v18bcaf669u2b2r828b0ejrm" unique="false" columns="ORG_ID"/>
+      <foreign-key name="FK_ORG_ID_CONSTRAINT" columns="ORG_ID" ref-table="organization" ref-schema="" ref-catalog="cmpe275lab2" ref-columns="ORG_ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="EMAIL" unique="true" columns="EMAIL"/>
+      <index name="FK_ORG_ID" unique="false" columns="ORG_ID"/>
     </table>
   </data-source>
 </component>

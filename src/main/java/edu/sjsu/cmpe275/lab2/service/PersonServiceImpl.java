@@ -55,11 +55,13 @@ public class PersonServiceImpl implements IPersonService {
     public String addFriend(Person p1, Person p2) {
         try {
             int flag = 0;
-            List<Person> l1 = new ArrayList<>();
-            List<Person> l2 = new ArrayList<>();
+            List<Person> l1;
+            List<Person> l2;
             for (Person person : p1.getFriends()) {
-                flag=1;
-                break;
+                if(person.getFirstname().equals(p2.getFirstname())) {
+                    flag = 1;
+                    break;
+                }
             }
             if(flag==0)
             {

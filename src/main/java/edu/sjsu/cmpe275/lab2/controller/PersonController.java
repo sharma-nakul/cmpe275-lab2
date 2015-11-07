@@ -69,19 +69,23 @@ public class PersonController extends Throwable {
         try {
             Address address = new Address(street, city, state, zip);
             Organization organization = new Organization();
+            Person person;
             if (orgId != null) {
-                Organization o1=this.orgService.getOrganization(orgId);
-                if(o1==null)
-                    throw new DataIntegrityViolationException("Organization id is incorrect! Please provide correct id or leave it blank.");
-                organization.setId(Long.parseLong(orgId));
+                Organization o1 = this.orgService.getOrganization(orgId);
+                if (o1 == null)
+                        throw new DataIntegrityViolationException("Organization id is incorrect! Please provide correct id or leave it blank.");
+                organization.setId(o1.getId());
+                logger.info("org " + o1.getId());
+                person = this.personService.addPerson(firstname, lastname, email, description, address, organization);
             }
-            Person person = this.personService.addPerson(firstname, lastname, email, description, address, organization);
+            else
+            person=this.personService.addPerson(firstname,lastname,email,description,address,null);
             if (person == null)
                 return new ResponseEntity<>("Could not save the user at this time, please check your request or try later.", HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(person, HttpStatus.OK);
         }
         catch(DataIntegrityViolationException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Either email or organization id is not correct.", HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
             return new ResponseEntity<>("Invalid Request", HttpStatus.BAD_REQUEST);
