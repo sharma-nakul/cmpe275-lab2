@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping(value = "api/v1/org",
-        produces = {"application/xml", "application/json", "text/html"},
+@RequestMapping(value = "org",
+        produces = {"application/xml", "application/json"},
         consumes = MediaType.APPLICATION_JSON_VALUE)
 public class OrganizationController extends Throwable {
 

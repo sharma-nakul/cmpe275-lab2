@@ -16,21 +16,9 @@
           <file>file://$MODULE_DIR$/src/main/java/edu/sjsu/cmpe275/lab2/Application.java</file>
           <file>file://$MODULE_DIR$/src/main/java/edu/sjsu/cmpe275/lab2/WebConfig.java</file>
           <file>file://$MODULE_DIR$/src/main/java/edu/sjsu/cmpe275/lab2/HibernateConfig.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/edu/sjsu/cmpe275/lab2/CaseInsensitiveRequestFilter.java</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/cmpe275-servlet.xml</file>
         </fileset>
-      </configuration>
-    </facet>
-    <facet type="web" name="Web">
-      <configuration>
-        <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/web/WEB-INF/web.xml" />
-        </descriptors>
-        <webroots>
-          <root url="file://$MODULE_DIR$/web" relative="/" />
-        </webroots>
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/java" />
-          <root url="file://$MODULE_DIR$/src/main/resources" />
-        </sourceRoots>
       </configuration>
     </facet>
   </component>
@@ -115,5 +103,12 @@
     <orderEntry type="library" name="Gradle: com.sun.istack:istack-commons-runtime:2.16" level="project" />
     <orderEntry type="library" name="Gradle: javax.xml.bind:jsr173_api:1.0" level="project" />
     <orderEntry type="library" name="Gradle: javax.xml.bind:jaxb-api:2.2.12" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-thymeleaf:1.2.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:1.2.9" level="project" />
+    <orderEntry type="library" name="Gradle: org.thymeleaf:thymeleaf:2.1.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: ognl:ognl:3.0.8" level="project" />
+    <orderEntry type="library" name="Gradle: org.unbescape:unbescape:1.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: javax.servlet:jstl:1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.thymeleaf:thymeleaf-spring4:2.1.4.RELEASE" level="project" />
   </component>
 </module>

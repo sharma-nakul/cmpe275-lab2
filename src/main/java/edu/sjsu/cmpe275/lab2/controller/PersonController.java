@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
  * Controller class for Person Entity. The defines all person related APIs.
  */
 @RestController
-@RequestMapping(value = "api/v1/person",
-        produces = {"application/xml", "application/json", "text/html"},
+@RequestMapping(value = "person",
+        produces = {"application/xml", "application/json"},
         consumes = MediaType.APPLICATION_JSON_VALUE)
 public class PersonController extends Throwable {
 
@@ -91,7 +91,6 @@ public class PersonController extends Throwable {
             return new ResponseEntity<>("Invalid Request", HttpStatus.BAD_REQUEST);
         }
     }
-
 
 
 

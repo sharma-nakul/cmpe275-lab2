@@ -36,4 +36,7 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.6'
     compile("org.springframework:spring-jdbc")
     compile("com.h2database:h2")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile 'javax.servlet:jstl:1.2'
+
 }
