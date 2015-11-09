@@ -15,8 +15,9 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
- * Created by Nakul on 02-Nov-15.
+ * @author Nakul Sharma
  * Class to configure Hibernate properties, transaction and SQL drivers.
+ * PropertySource annotation is used to fetch properties file from /resources folder
  */
 @org.springframework.context.annotation.Configuration
 @EnableTransactionManagement
@@ -24,9 +25,16 @@ import java.util.Properties;
 @PropertySource(value = {"classpath:application.properties"})
 public class HibernateConfig {
 
+    /**
+     * Object of an Environment is autowired
+     */
     @Autowired
     private Environment environment;
 
+    /**
+     * Bean method to create LocalSessionFactoryBean
+     * @return Object of session factory
+     */
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -36,6 +44,10 @@ public class HibernateConfig {
         return sessionFactory;
     }
 
+    /**
+     * Method to set hibernate properties
+     * @return Properties after set
+     */
     private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
@@ -45,6 +57,10 @@ public class HibernateConfig {
     }
 
 
+    /**
+     * Bean method to create data source bean
+     * @return created data source bean object
+     */
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -55,6 +71,11 @@ public class HibernateConfig {
         return dataSource;
     }
 
+    /**
+     * Bean method setup transaction manger bean for performing transactions using @Transactional annotation
+     * @param sessionFactory Object of session factory to initiate session
+     * @return current transactions
+     */
     @Bean (name ="tx1")
     public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
         HibernateTransactionManager tx = new HibernateTransactionManager();

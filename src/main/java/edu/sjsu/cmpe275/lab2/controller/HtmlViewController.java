@@ -17,27 +17,48 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 /**
- * Handles requests for the application home page.
+ * @author Nakul Sharma
+ * Controller class to handle request when format is HTML for Person and Organization GET request.
+ * It also handles the GET request for root URI.
  */
 @Controller
 public class HtmlViewController {
 
+    /**
+     * Variable of type logger to print data on console.
+     */
     private static final Logger logger = LoggerFactory.getLogger(HtmlViewController.class);
 
+    /**
+     * This Autowire the Organization Service interface to serve HTTP request of Organization URI.
+     */
     @Autowired
     IOrganizationService organizationService;
 
+    /**
+     * This Autowire the Person Service interface to serve HTTP request of Person URI.
+     */
     @Autowired
     IPersonService personService;
 
     /**
-     * Simply selects the home view to render by returning its name.
+     * Controller method to handle HTTP GET request of root URI i.e. /
+     * HTTP REQUEST - GET
+     * @return String with value as "home" to render home.html page.
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String home() {
         return "home";
     }
 
+    /**
+     * Controller method to handle HTTP GET request for Organization URI /org/{id}
+     * The format parameter is optional. If present, value is 'html'.
+     * HTTP REQUEST - GET
+     * @param id This is the id of an existing organization.
+     * @param model This field is NOT REQUIRED as parameter, it is to provide HTML view when format=HTML.
+     * @return String as "org" for correct request, otherwise "error" to map the HTML page org.html and error.html respectively.
+     */
     @RequestMapping(value = "org/{id}", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     public String getOrgInHtml(
             @PathVariable("id") String id, Model model) {
@@ -53,6 +74,14 @@ public class HtmlViewController {
         }
     }
 
+    /**
+     * Controller method to handle HTTP GET request for Person URI /person/{id}
+     * The format parameter is optional. If present, value is 'html'.
+     * HTTP REQUEST - GET
+     * @param id This is the id of an existing organization.
+     * @param model This field is NOT REQUIRED as parameter, it is to provide HTML view when format=HTML.
+     * @return String as "org" for correct request, otherwise "error" to map the HTML page org.html and error.html respectively.
+     */
     @RequestMapping(value = "person/{id}", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     public String getPersonInHtml(
             @PathVariable("id") String id, Model model) {

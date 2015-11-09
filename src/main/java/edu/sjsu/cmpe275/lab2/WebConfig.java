@@ -20,6 +20,9 @@ import javax.annotation.Resource;
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
 
+    /**
+     * Object of an organization object to set error codes
+     */
     @Resource
     private Environment env;
 
@@ -38,6 +41,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 mediaType("html", MediaType.TEXT_HTML);
     }
 
+    /**
+     * Bean method to bind message source
+     * @return message source
+     */
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();

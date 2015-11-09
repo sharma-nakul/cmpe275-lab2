@@ -16,8 +16,10 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Created by Nakul on 27-Oct-15.
- * Controller class for Person Entity. The defines all person related APIs.
+ * @author Nakul Sharma
+ * Controller class to manage Person related APIs.
+ * RestController annotation is used to map the class as RestFul web service controller.
+ * RequestMapping annotation is used to map the base URI.
  */
 @RestController
 @RequestMapping(value = "person",
@@ -25,24 +27,26 @@ import org.springframework.web.bind.annotation.*;
         consumes = MediaType.APPLICATION_JSON_VALUE)
 public class PersonController extends Throwable {
 
+    /**
+     * Variable of type logger to print data on console.
+     */
     private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
 
+    /**
+     * This Autowire the person service interface to serve HTTP request of Person URI.
+     */
     @Autowired
     private IPersonService personService;
 
+    /**
+     * This Autowire the organization service interface to serve HTTP request of Organization URI.
+     */
     @Autowired
     private IOrganizationService orgService;
 
     /**
-     * Controller method to fetch create new user profile. Payload should be of JSON format.
-     * Payload may have "id" field but it is not mandatory.
-     * All the person fields (firstname, lastname, email, street, city, organization, etc), except ID and friends, are passed in as query parameters.
-     * Only the firstname, lastname, and email are required. Anything else is optional.
-     * --------Friends is not allowed to be passed in as a parameter.
-     * The organization parameter, if present, must be the ID of an existing organization.
-     * The request returns the newly created person object in JSON in its HTTP payload, including all attributes. (Please note this differs from generally recommended practice of only returning the ID.)
-     * If the request is invalid, e.g., missing required parameters, the HTTP status code should be 400; otherwise 200.
-     *
+     * Method to add a person using HTTP URI as /person?
+     * HTTP REQUEST - POST
      * @param firstname   It is a first name of a person. (Required)
      * @param lastname    It is a last name of a person. (Required)
      * @param email       It is an email id of a person. (Required)
@@ -51,7 +55,9 @@ public class PersonController extends Throwable {
      * @param state       Name of state. (Optional)
      * @param zip         Zip Code of a location. (Optional)
      * @param description Description of a person. (Optional)
-     * @return Object of person in JSON format.
+     * @param orgId Id of an existing organization. Request parameter should "organization". (Optional)
+     * @return Https Status as OK (200 - successful), BAD REQUEST (400 - Parameter missing or invalid)
+     * and Person object in JSON format.
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
@@ -93,7 +99,14 @@ public class PersonController extends Throwable {
     }
 
 
-
+    /**
+     * Method to get a person details using HTTP URI /person/{id}
+     * HTTP REQUEST - GET
+     * format parameter is optional, if present must be of value either json or xml.
+     * @param id Id of an existing person.
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exist)
+     * and Person object in JSON or XML format.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getPerson(
             @PathVariable("id") String id) {
@@ -109,8 +122,22 @@ public class PersonController extends Throwable {
     }
 
 
-
-
+    /**
+     * Method to update a person using HTTP URI as /person/{id}?
+     * HTTP REQUEST - POST
+     * @param id Id of an existing person who needs to be updated.
+     * @param firstname   It is a first name of a person. (Required)
+     * @param lastname    It is a last name of a person. (Required)
+     * @param email       It is an email id of a person. (Required)
+     * @param street      Name of street.(Optional)
+     * @param city        Name of city. (Optional)
+     * @param state       Name of state. (Optional)
+     * @param zip         Zip Code of a location. (Optional)
+     * @param description Description of a person. (Optional)
+     * @param orgId Id of an existing organization.
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exist),
+     * BAD REQUEST (400 - Parameter missing or Invalid request) and Person object in JSON format.
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}")
     @ResponseBody
     public ResponseEntity updatePerson(
@@ -164,8 +191,13 @@ public class PersonController extends Throwable {
     }
 
 
-
-
+    /**
+     * Method to delete a person using HTTP URI as /person/{id}
+     * HTTP REQUEST - DELETE
+     * @param id Id of an existing person who needs to be delete.
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exist)
+     * and Person object in JSON format.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deletePerson(
             @PathVariable("id") String id) {

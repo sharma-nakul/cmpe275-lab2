@@ -15,32 +15,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nakul on 03-Nov-15.
+ * @author Nakul Sharma
  * Handler class for Person. The class intercept REST call to persist or retrieve data.
+ * Service annotation to mark the class as service class in application context
+ * Transactional annotation to make the class transactional entity i.e. it will be
+ * counted a single transaction
  */
-
 @Service
 @Transactional("tx1")
 public class PersonServiceImpl implements IPersonService {
 
+    /**
+     * Object to log the values on console.
+     */
     private static final Logger logger = LoggerFactory.getLogger(PersonServiceImpl.class);
 
+    /**
+     * Autowire the Person DAO interface object in this class
+     */
     @Autowired
     private IPersonDao personDao;
 
+    /**
+     * Method to add a person into database
+     * @param firstname firstname of a person
+     * @param lastname lastname of a person
+     * @param email email id of a person
+     * @param description description of a person
+     * @param address address of a person
+     * @param organization organization object that contains only id of an existing organization
+     * @return Object of an added person
+     */
     public Person addPerson(String firstname, String lastname, String email, String description, Address address, Organization organization) {
         return personDao.addPerson(firstname, lastname, email, description, address, organization);
     }
 
+    /**
+     * Method to get a person from database
+     * @param id Id of an existing person
+     * @return Object of an existing person
+     */
     public Person getPerson(String id) {
         return personDao.getPerson(id);
     }
 
+    /**
+     * Method to update a person into database
+     * @param person Object of a person to be updated in database
+     * @return Object of an updated person information
+     */
     public Person updatePerson(Person person) {
         personDao.updatePerson(person);
         return person;
     }
 
+    /**
+     * Method to delete a person from database
+     * @param person Object of a person that needs to be deleted
+     */
     public void deletePerson(Person person) {
         //personDao.deletePerson(person);
         List<Person> l1 = person.getFriends();
@@ -52,6 +84,11 @@ public class PersonServiceImpl implements IPersonService {
         personDao.deletePerson(person);
     }
 
+    /**
+     * Method to add (persist) a friend in person's friend list
+     * @param p1 Object of a person who wants to add p2 from friend list
+     * @param p2 Object of a person that needs to be added in friend list
+     */
     public String addFriend(Person p1, Person p2) {
         try {
             int flag = 0;
@@ -82,6 +119,11 @@ public class PersonServiceImpl implements IPersonService {
         }
     }
 
+    /**
+     * Method to delete a friend in person's friend list
+     * @param p1 Object of a person who wants to delete p2 from friend list
+     * @param p2 Object of a person that needs to be deleted in friend list
+     */
     public String deleteFriend(Person p1, Person p2) {
         try {
             int flag=0;

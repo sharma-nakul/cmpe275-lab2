@@ -8,15 +8,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by Nakul on 05-Nov-15.
+ * @author Nakul Sharma
  * Implementation class for Organization DAO interface methods.
+ * Repository annotation to mark the class as repository entity for an organization
  */
 @Repository
 public class OrganizationDaoImpl extends AbstractDao implements IOrganizationDao{
 
+    /**
+     * Variable of type logger to print data on console
+     */
     private static final Logger logger = LoggerFactory.getLogger(OrganizationDaoImpl.class);
+    /**
+     * Object to hold the current session for hibernate connection
+     */
     private Session session;
 
+    /**
+     * Method to add an organization into database
+     * @param name Name of an organization
+     * @param description Short description of an organization
+     * @param address Address of an organization
+     * @return Object of an added organization.
+     */
     @Override
     public Organization addOrganization(String name, String description, Address address)
     {
@@ -28,6 +42,11 @@ public class OrganizationDaoImpl extends AbstractDao implements IOrganizationDao
         return organization;
     }
 
+    /**
+     * Method to update an organization into database
+     * @param organization Object of an organization
+     * @return Object of an updated organization
+     */
     @Override
     public Organization updateOrganization(Organization organization)
     {
@@ -37,6 +56,11 @@ public class OrganizationDaoImpl extends AbstractDao implements IOrganizationDao
         return organization;
     }
 
+    /**
+     * Method to get an organization details from database
+     * @param id Id of an existing organization
+     * @return Object of an existing organization
+     */
     @Override
     public Organization getOrganization(String id){
         session = getSession();
@@ -49,6 +73,10 @@ public class OrganizationDaoImpl extends AbstractDao implements IOrganizationDao
         return organization;
     }
 
+    /**
+     * Method to delete an organization from database
+     * @param organization Object of an organization that needs to be deleted
+     */
     @Override
     public void deleteOrganization(Organization organization)
     {

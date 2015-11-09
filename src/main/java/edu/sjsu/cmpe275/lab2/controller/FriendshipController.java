@@ -1,9 +1,5 @@
 package edu.sjsu.cmpe275.lab2.controller;
 
-/**
- * Created by Nakul on 03-Nov-15.
- * Controller class to manage friendship APIs.
- */
 
 import edu.sjsu.cmpe275.lab2.model.Person;
 import edu.sjsu.cmpe275.lab2.service.IPersonService;
@@ -16,13 +12,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author Nakul Sharma
+ * Controller class to handle HTTP request of friends.
+ * RestController annotation is used to map the class as RestFul web service controller.
+ * RequestMapping annotation is used to map the base URI.
+ */
 @RestController
-@RequestMapping(value = "api/v1/friends")
+@RequestMapping(value = "friends")
 public class FriendshipController extends Throwable {
 
+    /**
+     * This Autowire the Person Service interface to serve HTTP request of Person URI.
+     */
     @Autowired
     private IPersonService personService;
 
+    /**
+     * Method to add a friend using HTTP URI as /friends/{id1}/{id2}
+     * HTTP REQUEST - PUT
+     * @param id1 ID of a person 1.
+     * @param id2 ID of a person 2.
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exists)
+     */
     @RequestMapping(value = "/{id1}/{id2}", method = RequestMethod.PUT)
     public ResponseEntity makeFriendship(
             @PathVariable("id1") String id1,
@@ -47,6 +59,13 @@ public class FriendshipController extends Throwable {
         }
     }
 
+    /**
+     * Method to delete a friend from person profile using HTTP URI as /friends/{id1}/{id2}
+     * HTTP REQUEST - DELETE
+     * @param id1 Id of a person who wants to delete a friend.
+     * @param id2 Id of a person who needs to be deleted.
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exists)
+     */
     @RequestMapping(value = "/{id1}/{id2}", method = RequestMethod.DELETE)
     public ResponseEntity deleteFriendship(@PathVariable("id1") String id1,
                                            @PathVariable("id2") String id2) {

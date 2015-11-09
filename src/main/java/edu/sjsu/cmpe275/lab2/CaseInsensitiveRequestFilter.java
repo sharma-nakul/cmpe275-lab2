@@ -16,27 +16,41 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * Wrapper for an {@link HttpServletRequest} to make the lookup of parameters case insensitive. The functionality
- * is achieved by using the {@link LinkedCaseInsensitiveMap} from Spring.
- *
- * @author Marten Deinum
+ * Configuration class
+ * Wrapper to make url case insensitive
+ * @author Nakul Sharma
  */
 @Configuration
 @Component
 public class CaseInsensitiveRequestFilter extends OncePerRequestFilter {
+
+    /**
+     * Get HttpServlete request and apply filters
+     * @param request Http request
+     * @param response Http response
+     * @param filterChain Object of filter to be applied
+     * @throws ServletException Any servlet exception thrown
+     * @throws IOException Any IOException thrown
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         filterChain.doFilter(new CaseInsensitiveHttpServletRequestWrapper(request), response);
     }
 
+    /**
+     * Static class to use the Http wrapper for setting all URLs as case insensitive
+     */
     private static class CaseInsensitiveHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
+        /**
+         * Map that is responsible for making parameters as case insensitive.
+         */
         private final LinkedCaseInsensitiveMap<String[]> params = new LinkedCaseInsensitiveMap<>();
 
         /**
          * Constructs a request object wrapping the given request.
          *
-         * @param request
+         * @param request Http request
          * @throws IllegalArgumentException if the request is null
          */
         private CaseInsensitiveHttpServletRequestWrapper(HttpServletRequest request) {
@@ -44,6 +58,11 @@ public class CaseInsensitiveRequestFilter extends OncePerRequestFilter {
             params.putAll(request.getParameterMap());
         }
 
+        /**
+         * Method to get parameters from the URI
+         * @param name
+         * @return Parameters in lower case
+         */
         @Override
         public String getParameter(String name) {
             String[] values = getParameterValues(name.toLowerCase());
@@ -53,16 +72,29 @@ public class CaseInsensitiveRequestFilter extends OncePerRequestFilter {
             return values[0];
         }
 
+        /**
+         * Getter for parameter map
+         * @return collections of parameter of type Map
+         */
         @Override
         public Map<String, String[]> getParameterMap() {
             return Collections.unmodifiableMap(this.params);
         }
 
+        /**
+         * Getter for parameter names
+         * @return Collection of parameter names in ENUM format
+         */
         @Override
         public Enumeration<String> getParameterNames() {
             return Collections.enumeration(this.params.keySet());
         }
 
+        /**
+         * Getter of Parameter Name List
+         * @param name Parameter name
+         * @return String array of parameter name
+         */
         @Override
         public String[] getParameterValues(String name) {
             return (String[])params.get(name.toLowerCase());

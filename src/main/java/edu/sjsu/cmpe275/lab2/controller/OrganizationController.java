@@ -14,21 +14,39 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Created by Nakul on 05-Nov-15.
- * Controller class to communicate with Organization related APIs.
+ * @author Nakul Sharma
+ * Controller class to manage organization related APIs.
+ * RestController annotation is used to map the class as RestFul web service controller.
+ * RequestMapping annotation is used to map the base URI.
  */
-
 @RestController
 @RequestMapping(value = "org",
         produces = {"application/xml", "application/json"},
         consumes = MediaType.APPLICATION_JSON_VALUE)
 public class OrganizationController extends Throwable {
 
+    /**
+     * Variable of type logger to print data on console.
+     */
     private static final Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
+    /**
+     * This Autowire the organization service interface to serve HTTP request of Organization URI.
+     */
     @Autowired
     private IOrganizationService organizationService;
 
+    /**
+     * Method to add an organization using HTTP URI as /org/?
+     * HTTP REQUEST - POST
+     * @param name Name of an organization. (Required)
+     * @param description Short description of an organization. (Optional)
+     * @param street Address field "street" of an organization. (Optional)
+     * @param city Address field "city" of an organization. (Optional)
+     * @param state Address field "state" of an organization. (Optional)
+     * @param zip Address field "zip" of an organization. (Optional)
+     * @return Https Status as OK (200 - successful), BAD REQUEST (400 - Parameter missing or invalid) and Organization object as JSON.
+     */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity addOrganization(
@@ -50,6 +68,13 @@ public class OrganizationController extends Throwable {
         }
     }
 
+    /**
+     * Method to get an organization using HTTP URI as /org/{id}
+     * format parameter is optional, if present be of value either xml or json
+     * HTTP REQUEST - GET
+     * @param id Organization id
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exists) and Organization object of a JSON or XML format.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getOrganizationInformation(
             @PathVariable("id") String id) {
@@ -64,6 +89,13 @@ public class OrganizationController extends Throwable {
         }
     }
 
+    /**
+     * Method to delete an organization using HTTP URI as /org/{id}
+     * HTTP REQUEST - DELETE
+     * @param id Organization id
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exists) and BAD REQUEST (400 - Id references found)
+     * and Organization object in JSON format.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteOrganization (
             @PathVariable("id") String id){
@@ -82,6 +114,19 @@ public class OrganizationController extends Throwable {
         }
     }
 
+    /**
+     * Method to update an organization using HTTP URI org/{id}
+     * HTTP REQUEST - POST
+     * @param id Id of an existing organization.
+     * @param name Name of an organization. (Required)
+     * @param description Short description of an organization. (Optional)
+     * @param street Address field "street" of an organization. (Optional)
+     * @param city Address field "city" of an organization. (Optional)
+     * @param state Address field "state" of an organization. (Optional)
+     * @param zip Address field "zip" of an organization. (Optional)
+     * @return Https Status as OK (200 - successful), NOT FOUND (404 - Id doesn't exists), BAD REQUEST (400 - unsuccessful)
+     * and updated Organization object in JSON format.
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}")
     @ResponseBody
     public ResponseEntity updateOrganization(
